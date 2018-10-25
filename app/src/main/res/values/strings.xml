@@ -1,3 +1,5 @@
 <resources>
-    <string name="app_name">Trak</string>
+    <string name="app_name">Trakr</string>
+    <string name="item1">item1</string>
+    <string name="hint_searchview">Search</string>
 </resources>
