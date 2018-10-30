@@ -5,10 +5,8 @@
     android:id="@+id/drawer_layout"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <!-- Layout to contain contents of main body of screen (drawer will slide over this) -->
     <FrameLayout
-        android:background="#ffffff"
-        android:id="@+id/content_frame"
+        android:elevation="20dp"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
@@ -17,7 +15,7 @@
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            android:background="?attr/colorPrimary"
+            android:background="#ffffff"
             android:theme="@style/ThemeOverlay.AppCompat.ActionBar">
 
             <com.hpr.ac.dev.trak.ui.CustomSearchView
@@ -26,6 +24,15 @@
 
             </com.hpr.ac.dev.trak.ui.CustomSearchView>
         </android.support.v7.widget.Toolbar>
+
+
+    </FrameLayout>
+    <!-- Layout to contain contents of main body of screen (drawer will slide over this) -->
+    <FrameLayout
+        android:id="@+id/flContent"
+        android:background="#ffffff"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
     </FrameLayout>
 
