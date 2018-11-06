@@ -25,6 +25,11 @@ public class MainActivity extends AppCompatActivity {
         ActionBar actionbar = getSupportActionBar();
         actionbar.setDisplayHomeAsUpEnabled(true);
         actionbar.setHomeAsUpIndicator(R.drawable.ic_menu_black_24dp);
+
+        MapFragment mapFragment = MapFragment.newInstance();
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.flContent, mapFragment)
+                .commit();
     }
 
     @Override
