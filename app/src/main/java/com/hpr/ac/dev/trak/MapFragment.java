@@ -1,8 +1,14 @@
 package com.hpr.ac.dev.trak;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
+import android.app.PendingIntent;
 import android.content.pm.PackageManager;
+import android.location.Location;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
@@ -11,17 +17,20 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.google.android.gms.common.api.PendingResult;
+import com.google.android.gms.common.api.Status;
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationCallback;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
-import com.google.android.gms.maps.model.Marker;
-import com.google.android.gms.maps.model.MarkerOptions;
-
-import java.util.ArrayList;
-
+import com.google.android.gms.tasks.OnSuccessListener;
 
 public class MapFragment extends Fragment implements
         GoogleMap.OnMyLocationButtonClickListener,
@@ -31,16 +40,57 @@ public class MapFragment extends Fragment implements
 
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 1;
     private boolean mPermissionDenied = false;
+    private static final long INTERVAL = 1000 * 10;
+    private static final long FASTEST_INTERVAL = 1000 * 5;
+    LocationRequest mLocationRequest;
 
     private SupportMapFragment mMapFragment;
     private GoogleMap mMap;
-    private LatLngBounds mInitialMapBounds;
+
+    private FusedLocationProviderClient mFusedLocationClient;
 
     public static MapFragment newInstance() {
         return new MapFragment();
     }
 
     public MapFragment() {
+    }
+
+    // Create the Handler
+    private Handler handler = new Handler();
+
+    // Define the code block to be executed
+    private Runnable runnable = new Runnable() {
+        @SuppressLint("MissingPermission")
+        @Override
+        public void run() {
+            // Insert custom code here
+            mFusedLocationClient.getLastLocation()
+                    .addOnSuccessListener(getActivity(), new OnSuccessListener<Location>() {
+                        @Override
+                        public void onSuccess(Location location) {
+                            // Got last known location. In some rare situations this can be null.
+                            if (location != null) {
+                                CameraPosition cameraPosition = new CameraPosition.Builder()
+                                        .target(new LatLng(location.getLatitude(), location.getLongitude()))      // Sets the center of the map to Mountain View
+                                        .zoom(17)                   // Sets the zoom
+                                        .bearing(90)                // Sets the orientation of the camera to east
+                                        .tilt(60)                   // Sets the tilt of the camera to 30 degrees
+                                        .build();                   // Creates a CameraPosition from the builder
+                                mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+                            }
+                        }
+                    });
+            // Repeat every 2 seconds
+            handler.postDelayed(runnable, 2000);
+        }
+    };
+
+    protected void createLocationRequest() {
+        mLocationRequest = new LocationRequest();
+        mLocationRequest.setInterval(INTERVAL);
+        mLocationRequest.setFastestInterval(FASTEST_INTERVAL);
+        mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
     }
 
     @Override
@@ -70,56 +120,27 @@ public class MapFragment extends Fragment implements
         map.getUiSettings().setMyLocationButtonEnabled(true);
         enableMyLocation();
 
-        // zoom controls in lower right of map
-        map.getUiSettings().setZoomControlsEnabled(true);
-
-        mInitialMapBounds = loadMapMarkers(map);
         map.setOnMapLoadedCallback(new GoogleMap.OnMapLoadedCallback() {
             @Override
             public void onMapLoaded() {
-                mMap.animateCamera(CameraUpdateFactory.newLatLngBounds(mInitialMapBounds, 40));
             }
         });
     }
 
-    private LatLngBounds loadMapMarkers(GoogleMap map) {
-        ArrayList<MapMarker> mapMarkers =  MapMarker.getMapMarkers();
-
-        LatLngBounds.Builder bounds = new LatLngBounds.Builder();
-        MarkerOptions markerOptions;
-        Marker marker;
-        for(MapMarker mapMarker : mapMarkers) {
-            markerOptions = new MarkerOptions();
-            markerOptions.position(new LatLng(mapMarker.getLat(), mapMarker.getLng()));
-            marker = map.addMarker(markerOptions);
-            bounds.include(marker.getPosition());
-        }
-        return bounds.build();
-    }
-
-    /**
-     * Enables the My Location layer if the fine location permission has been granted.
-     * // https://gist.github.com/MariusVolkhart/618a51bb09c4fc7f86a4
-     */
     private void enableMyLocation() {
         if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED) {
             // Permission to access the location is missing.
-            this.requestPermissions(new String[] {Manifest.permission.ACCESS_FINE_LOCATION},
+            this.requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
                     LOCATION_PERMISSION_REQUEST_CODE);
         } else if (mMap != null) {
             // Access to the location has been granted to the app.
             mMap.setMyLocationEnabled(true);
+            createLocationRequest();
 
-            // zoom map to current location, if known
-//            LocationManager locationManager =
-//                    (LocationManager)getActivity().getSystemService(Context.LOCATION_SERVICE);
-//            Location location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-//            if (location != null) {
-//                LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
-//                CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng, 11);
-//                mMap.animateCamera(cameraUpdate);
-//            }
+
+            mFusedLocationClient = LocationServices.getFusedLocationProviderClient(getActivity());
+            handler.post(runnable);
         }
     }
 
