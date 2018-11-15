@@ -17,7 +17,7 @@ public class CustomSearchView extends RelativeLayout {
 
     private EditText searchEditText;
     private boolean isClearButtonVisible;
-    private ImageView clearButtonImage,micButtonImage;
+    private ImageView clearButtonImage, micButtonImage;
 
 
     public CustomSearchView(Context context) {

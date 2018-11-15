@@ -8,10 +8,6 @@ import android.view.ViewGroup;
 
 import com.google.android.gms.maps.SupportMapFragment;
 
-/**
- * Created by barbara on 3/12/16.
- * http://stackoverflow.com/questions/13733299/initialize-mapfragment-programmatically-with-maps-api-v2
- */
 public class CustomSupportMapFragment extends SupportMapFragment {
     public static final String FRAGMENT_TAG = CustomSupportMapFragment.class.getSimpleName();
 
