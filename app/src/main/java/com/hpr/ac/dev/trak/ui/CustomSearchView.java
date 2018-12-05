@@ -19,7 +19,6 @@ public class CustomSearchView extends RelativeLayout {
     private boolean isClearButtonVisible;
     private ImageView clearButtonImage, micButtonImage;
 
-
     public CustomSearchView(Context context) {
         super(context);
         initView(context, null);
@@ -53,7 +52,6 @@ public class CustomSearchView extends RelativeLayout {
         searchEditText.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
             }
 
             @Override
@@ -66,7 +64,6 @@ public class CustomSearchView extends RelativeLayout {
 
             @Override
             public void afterTextChanged(Editable s) {
-
             }
         });
         addView(root);
@@ -79,7 +76,6 @@ public class CustomSearchView extends RelativeLayout {
         slideInAnimation.setDuration(100);
         slideInAnimation.start();
         isClearButtonVisible = true;
-
     }
 
     private void hideClearButton() {
@@ -87,7 +83,6 @@ public class CustomSearchView extends RelativeLayout {
         slideInAnimation.addListener(new Animator.AnimatorListener() {
             @Override
             public void onAnimationStart(Animator animation) {
-
             }
 
             @Override
@@ -99,16 +94,13 @@ public class CustomSearchView extends RelativeLayout {
 
             @Override
             public void onAnimationCancel(Animator animation) {
-
             }
 
             @Override
             public void onAnimationRepeat(Animator animation) {
-
             }
         });
         slideInAnimation.setDuration(100);
         slideInAnimation.start();
     }
-
 }

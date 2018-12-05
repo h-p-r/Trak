@@ -9,11 +9,7 @@ import android.view.ViewGroup;
 import com.google.android.gms.maps.SupportMapFragment;
 
 public class CustomSupportMapFragment extends SupportMapFragment {
-    public static final String FRAGMENT_TAG = CustomSupportMapFragment.class.getSimpleName();
 
-    /**
-     * Listener interface to tell when the map is ready
-     */
     public static interface OnMapFragmentReadyListener {
         void onMapFragmentReady();
     }
@@ -30,7 +26,6 @@ public class CustomSupportMapFragment extends SupportMapFragment {
     public View onCreateView(LayoutInflater arg0, ViewGroup arg1, Bundle arg2) {
         View v = super.onCreateView(arg0, arg1, arg2);
 
-        // notify listener when ready
         Fragment fragment = getParentFragment();
         if (fragment != null && fragment instanceof OnMapFragmentReadyListener) {
             ((OnMapFragmentReadyListener) fragment).onMapFragmentReady();

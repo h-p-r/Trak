@@ -29,7 +29,6 @@ public class CustomImageViewforMarker extends android.support.v7.widget.AppCompa
     public void setImageResourcewithColor(int color) {
         setImageResource(R.drawable.marker);
 
-
         if (color == 1) {
             DrawableCompat.setTint(this.getDrawable(), ContextCompat.getColor(getContext(), R.color.RedMarker));
         }
@@ -39,6 +38,5 @@ public class CustomImageViewforMarker extends android.support.v7.widget.AppCompa
         if (color == 3) {
             DrawableCompat.setTint(this.getDrawable(), ContextCompat.getColor(getContext(), R.color.OrangeMarker));
         }
-
     }
 }
