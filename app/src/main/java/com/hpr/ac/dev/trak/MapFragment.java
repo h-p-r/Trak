@@ -128,7 +128,7 @@ public class MapFragment extends Fragment implements
                             marker.remove();
                         marker = mMap.addMarker(new MarkerOptions().position(new LatLng(note.lat, note.lon)).
                                 icon(BitmapDescriptorFactory.fromBitmap(
-                                        createCustomMarker(getContext(), cond, "120B"))));
+                                        createCustomMarker(getContext(), cond, note.busnumber))));
                         marker.setTitle("Licence No: " + note.licence_no + "\nDestination: " + note.busdest +
                                 "\nBus Type:" + note.type + " " + note.floor_type);
 
@@ -151,7 +151,7 @@ public class MapFragment extends Fragment implements
                             marker.remove();
                         marker = mMap.addMarker(new MarkerOptions().position(new LatLng(note.lat, note.lon)).
                                 icon(BitmapDescriptorFactory.fromBitmap(
-                                        createCustomMarker(getContext(), cond, "120B"))));
+                                        createCustomMarker(getContext(), cond, note.busnumber))));
                         marker.setTitle("Licence No: " + note.licence_no + "\nDestination: " + note.busdest +
                                 "\nBus Type:" + note.type + " " + note.floor_type);
 
